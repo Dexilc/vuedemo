@@ -2,17 +2,28 @@
 <template>
   <div class="shopcar-container">
     <div class="goods-list">
-      <div class="mui-card" v-for="item in goodslist" :key="item.id">
+      <div class="mui-card" v-for="(item, i) in goodslist" :key="item.id">
         <div class="mui-card-content">
           <div class="mui-card-content-inner">
-            <mt-switch></mt-switch>
+            <mt-switch
+              v-model="$store.getters.getGoodsSelected[item.id]"
+              @change="
+                selectedChanged(
+                  item.id,
+                  $store.getters.getGoodsSelected[item.id]
+                )
+              "
+            ></mt-switch>
             <img :src="item.thumb_path" alt="" />
             <div class="info">
               <h1>{{ item.title }}</h1>
               <p>
                 <span class="price">￥{{ item.sell_price }}</span>
-                <numbox></numbox>
-                <a href="#">删除</a>
+                <numbox
+                  :initcount="$store.getters.getGoodsCount[item.id]"
+                  :goodsid="item.id"
+                ></numbox>
+                <a href="#" @click.prevent="remove(item.id, i)">删除</a>
               </p>
             </div>
           </div>
@@ -20,12 +31,24 @@
       </div>
       <div class="mui-card">
         <div class="mui-card-content">
-          <div class="mui-card-content-inner">
-            这是一个最简单的卡片视图控件；卡片视图常用来显示完整独立的一段信息，比如一篇文章的预览图、作者信息、点赞数量等
+          <div class="mui-card-content-inner jiesuan">
+            <div class="left">
+              <p>总计（不含运费）</p>
+              <p>
+                已勾选商品<span class="red">{{
+                  $store.getters.getGoodsCountAndAmount.count
+                }}</span
+                >件，总价<span class="red"
+                  >￥{{ $store.getters.getGoodsCountAndAmount.amount }}</span
+                >
+              </p>
+            </div>
+            <mt-button type="danger">去结算</mt-button>
           </div>
         </div>
       </div>
     </div>
+    <p>{{ $store.getters.getGoodsSelected }}</p>
   </div>
 </template>
 
@@ -63,6 +86,15 @@ export default {
           this.goodslist = result.body.message
         }
       })
+    },
+    remove (id, index) {
+      this.goodslist.splice(index, 1)
+      this.$store.commit('removeFormCar', id)
+    },
+    selectedChanged (id, val) {
+      // console.log(id + '---' + val);
+      this.$store.commit('updateGoodsSelected', { id, selected: val })
+
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
@@ -94,7 +126,7 @@ export default {
       width: 55px;
     }
     h1 {
-      font-size: 14px;
+      font-size: 13px;
     }
     .info {
       display: flex;
@@ -104,6 +136,16 @@ export default {
         color: red;
         font-weight: bold;
       }
+    }
+  }
+  .jiesuan {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .red {
+      color: red;
+      font-weight: bold;
+      font-size: 16px;
     }
   }
 }
