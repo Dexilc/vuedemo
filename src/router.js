@@ -15,7 +15,8 @@ import GoodsComment from "./components/goods/GoodsComment.vue"
 
 // 3. 创建路由对象
 var router = new VueRouter({
-  mode: 'history',
+  // 去除url里的#,模式设置为history
+  // mode: 'history',
   routes: [{
       path: '/',
       redirect: "/home"
