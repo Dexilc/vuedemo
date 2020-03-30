@@ -1,7 +1,47 @@
 // 入口文件
+import app from './App.vue'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
+var car = JSON.parse(localStorage.getItem('car') || '[]')
+import Vuex from 'vuex'
+Vue.use(Vuex)
+var store = new Vuex.Store({
+  // 储存共享数据的仓库
+  state: {
+    //将购物车中的商品数据，用一个数组存起来，在car数组中，存储一些商品的对象，咱们可以暂时将这个商品对象
+    //{id:商品id,count:购买数量,price:商品价格,selected:false}
+    car: car
+  },
+  mutations: {
+    addToCar(state, goodsinfo) {
+      var flag = false
+      // 点击加入购物车，把商品信息保存到store中
+      state.car.some(item => {
+        if (item.id == goodsinfo.id) {
+          item.count += parseInt(goodsinfo.count)
+          flag = true
+          return true
+        }
+      })
+      if (!flag) {
+        state.car.push(goodsinfo)
+      }
+      localStorage.setItem('car', JSON.stringify(state.car))
+    }
+  },
+  getters: {
+    //获取购物车中的所有商品数量
+    getAllCount(state) {
+      let c = 0;
+      state.car.forEach(item => {
+        c += item.count
+      });
+      return c
+    }
+
+  }
+})
 // 导入时间插件
 import moment from 'moment'
 // 定义全局过滤器
@@ -20,12 +60,13 @@ import VuePreview from 'vue-preview'
 
 // defalut install
 Vue.use(VuePreview)
-import {
+/* import {
   Header,
   Swipe,
   SwipeItem,
   Button,
-  Lazyload
+  Lazyload,
+  Switch
 } from 'mint-ui'
 
 Vue.component(Header.name, Header)
@@ -33,14 +74,15 @@ Vue.component(Swipe.name, Swipe)
 Vue.component(SwipeItem.name, SwipeItem)
 Vue.component(Button.name, Button)
 Vue.use(Lazyload)
-/* import MintUI from 'mint-ui'
-Vue.use(MintUI) */
+Vue.component(Switch.name, Switch); */
+import MintUI from 'mint-ui'
+Vue.use(MintUI)
 import 'mint-ui/lib/style.css'
 import router from './router.js'
-import app from './App.vue'
 
 const vm = new Vue({
   el: '#app',
   render: c => c(app),
-  router
+  router,
+  store
 })
