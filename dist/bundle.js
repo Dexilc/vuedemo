@@ -51348,7 +51348,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // 3. 创建路由对象
 var router = new _vueRouter2.default({
-  mode: 'history',
+  // 去除url里的#,模式设置为history
+  // mode: 'history',
   routes: [{
     path: '/',
     redirect: "/home"
