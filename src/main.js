@@ -104,7 +104,7 @@ Vue.filter('dateFormat', function (dataStr, pattern = "YYYY-MM-DD HH:mm:ss") {
 })
 import VueResource from 'vue-resource'
 Vue.use(VueResource)
-Vue.http.options.root = 'http://www.liulongbin.top:3005' //设置请求根路径
+Vue.http.options.root = 'http://api.cms.liulongbin.top' //设置请求根路径
 Vue.http.options.emulateJSON = true;
 import './lib/mui/css/mui.min.css'
 import './lib/mui/css/icons-extra.css'
